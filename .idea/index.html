@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <!-- Keeps the page out of Google. Don't remove. -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="theme-color" content="#fbf6ef">
+    <title>For you ♡</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --cream:#fbf6ef; --paper:#fffdf9; --blush:#f7d9d6; --rose:#e48a98; --rose-deep:#c4566c;
+          --teal:#2f8f8a; --teal-soft:#d9eeea; --gold:#c9a24a; --ink:#3b2f3a; --muted:#8a7b86;
+          --line:#f1e3dc; --shadow:0 12px 30px rgba(120,70,80,.13); --radius:22px;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        [hidden]{display:none!important}
+        html,body{min-height:100%}
+        body{
+          font-family:'Nunito',system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--cream);
+          overflow-x:hidden;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;
+        }
+        /* zellige-style 8-point star pattern */
+        body::before{
+          content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%232f8f8a' stroke-opacity='.09' stroke-width='1.3'%3E%3Crect x='25' y='25' width='22' height='22'/%3E%3Crect x='25' y='25' width='22' height='22' transform='rotate(45 36 36)'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        button{font:inherit;color:inherit}
+        .decor{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+        .decor span{position:absolute;color:var(--c);opacity:.4;font-size:var(--s);animation:float var(--d) ease-in-out infinite}
+
+        .progress{position:fixed;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:20}
+        .progress i{width:6px;height:6px;border-radius:6px;background:#e9d6d0;transition:all .4s}
+        .progress i.on{width:20px;background:var(--rose)}
+
+        .stage{position:relative;z-index:1;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:46px 18px 48px}
+        .scene{display:none;width:100%;max-width:430px}
+        .scene.active{display:block;animation:sceneIn .7s cubic-bezier(.2,.8,.2,1) both}
+
+        .center{text-align:center}
+        .card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:28px 22px;text-align:center;position:relative}
+        .tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);background:var(--teal-soft);padding:7px 15px;border-radius:999px;font-weight:700}
+        h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.85rem,7.4vw,2.35rem);line-height:1.15;margin:14px 0 8px;letter-spacing:-.01em}
+        .hand{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose-deep);line-height:1.3}
+        .sub{color:var(--muted);font-size:.98rem}
+        .actions{text-align:center;margin-top:26px}
+        .btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;color:#fff;
+          background:linear-gradient(135deg,var(--rose),var(--rose-deep));font-weight:700;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+          padding:15px 26px;border-radius:999px;box-shadow:0 10px 22px rgba(196,86,108,.3);transition:transform .2s}
+        .btn:active{transform:scale(.95)}
+        .btn.small{padding:12px 20px;font-size:.72rem}
+        .link{border:0;background:none;cursor:pointer;color:var(--muted);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:18px;padding:10px}
+
+        /* ---------- envelope ---------- */
+        .envelope{position:relative;display:block;width:min(270px,76vw);aspect-ratio:1.55;margin:96px auto 18px;border:0;background:none;cursor:pointer;perspective:900px;animation:bob 3s ease-in-out infinite}
+        .envelope > span{position:absolute;inset:0;display:block}
+        .envelope .env-back{background:#eebfba;border-radius:12px;z-index:1}
+        .envelope .env-letter{inset:10px 16px 12px;background:var(--paper);border-radius:8px;z-index:2;display:flex;justify-content:center;padding-top:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform 1s cubic-bezier(.2,.8,.2,1) .5s}
+        .envelope .env-letter .hand{font-size:1.45rem}
+        .envelope .env-front{z-index:3;border-radius:12px;background:linear-gradient(160deg,#f7d7d2,#f0c3bd);clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%)}
+        .envelope .env-flap{z-index:4;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#e7a9a3,#eeb9b3);clip-path:polygon(0 0,100% 0,50% 58%);transform-origin:top;transition:transform .6s ease,z-index 0s .3s}
+        .envelope .env-seal{z-index:5;inset:auto;left:50%;top:38%;width:46px;height:46px;margin-left:-23px;border-radius:50%;background:var(--rose-deep);color:#fff;display:grid;place-items:center;font-size:1.1rem;box-shadow:0 3px 10px rgba(0,0,0,.18);transition:opacity .3s,transform .3s}
+        .envelope.open{animation:none}
+        .envelope.open .env-seal{opacity:0;transform:scale(.5)}
+        .envelope.open .env-flap{transform:rotateX(180deg);z-index:1}
+        .envelope.open .env-letter{transform:translateY(-58%)}
+        .hint{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700;animation:pulse 2s ease-in-out infinite}
+
+        /* ---------- birthday wish ---------- */
+        .mascot{width:112px;height:112px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;
+          background:radial-gradient(circle,#fff 58%,#fbe8e5);border:3px solid #f6d6d2;box-shadow:0 0 0 8px rgba(247,217,214,.35)}
+        .mascot svg{width:86px;height:86px}
+        .arabic{font-family:'Amiri',serif;font-size:1.55rem;color:var(--teal);line-height:1.4}
+        .divider{display:flex;align-items:center;gap:10px;color:var(--teal);margin:14px 0 16px;font-size:.9rem}
+        .divider::before,.divider::after{content:"";flex:1;border-top:2px dashed #cfe5e1}
+        .message{font-size:1.02rem;line-height:1.75;color:#5a4a57}
+
+        .player{display:flex;align-items:center;gap:14px;margin-top:22px;padding:14px;border-radius:18px;text-align:left;
+          background:linear-gradient(135deg,#fff,#fbf1ee);border:1px solid var(--line)}
+        .disc{flex:0 0 58px;height:58px;border-radius:50%;position:relative;
+          background-image:radial-gradient(circle,#fff 0 6%,#f7d9d6 6% 20%,#e48a98 20% 29%,transparent 29%),repeating-radial-gradient(circle,#3a3040 0 2px,#2c242e 2px 4px)}
+        .disc.spinning{animation:spin 3.2s linear infinite}
+        .player-body{flex:1;min-width:0}
+        .player-kicker{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:700}
+        .player-title{font-family:'Fraunces',Georgia,serif;font-size:1.05rem;line-height:1.2;margin-top:3px}
+        .player-artist{font-size:.84rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .bar{height:6px;background:#f0e2de;border-radius:6px;margin-top:10px;cursor:pointer;overflow:hidden}
+        .bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#57b3a9);border-radius:6px}
+        .times{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+        .play{flex:0 0 50px;height:50px;border-radius:50%;border:0;cursor:pointer;background:var(--teal);color:#fff;display:grid;place-items:center;box-shadow:0 8px 16px rgba(47,143,138,.32);transition:transform .2s}
+        .play:active{transform:scale(.92)}
+        .play:disabled{opacity:.45;cursor:default}
+        .note{margin-top:12px;font-size:1.3rem}
+
+        .music-fab{position:fixed;right:14px;bottom:14px;width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;background:#fff;color:var(--teal);
+          box-shadow:var(--shadow);display:grid;place-items:center;z-index:25;opacity:0;pointer-events:none;transition:opacity .3s}
+        .music-fab.show{opacity:1;pointer-events:auto}
+
+        /* ---------- album ---------- */
+        .carousel{position:relative;margin:20px auto 0;max-width:350px;touch-action:pan-y;user-select:none}
+        .viewport{overflow:hidden;padding:16px 0 20px}
+        .track{display:flex;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+        .slide{flex:0 0 100%;padding:0 24px}
+        .polaroid{background:#fff;padding:12px 12px 8px;box-shadow:var(--shadow);border-radius:4px;transform:rotate(var(--tilt))}
+        .polaroid img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px;background:#f3ece6;pointer-events:none}
+        .polaroid figcaption{min-height:56px;display:grid;place-items:center;padding:6px 4px 2px;font-size:1.32rem;text-align:center}
+        .arrow{position:absolute;top:46%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;background:#fff;box-shadow:var(--shadow);font-size:1.6rem;line-height:1;color:var(--rose-deep);z-index:2}
+        .arrow.prev{left:-4px}.arrow.next{right:-4px}
+        .dots{display:flex;justify-content:center;gap:7px;margin-top:4px}
+        .dots i{width:7px;height:7px;border-radius:7px;background:#e8d5cf;transition:all .3s}
+        .dots i.on{width:20px;background:var(--teal)}
+
+        /* ---------- wishes ---------- */
+        .flowers{display:flex;justify-content:center;gap:16px;margin:28px 0 4px;flex-wrap:wrap}
+        .flower-btn{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;transform-origin:bottom center;animation:sway 3.4s ease-in-out infinite;transition:opacity .35s,transform .35s}
+        .flower-btn .bloom{display:block;width:76px;height:76px;transition:transform .3s}
+        .flower-btn .bloom svg{width:100%;height:100%}
+        .flower-btn:hover .bloom{transform:rotate(18deg) scale(1.06)}
+        .flower-btn .stem{display:block;width:3px;height:44px;background:#8bb89a;border-radius:2px;margin-top:-10px}
+        .flower-btn .pick{margin-top:8px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700}
+        .flower-btn.used{opacity:0;transform:scale(.3);pointer-events:none;animation:none}
+        .wish-card{margin:24px 0 4px;animation:rise .5s cubic-bezier(.2,.9,.3,1.2) both}
+        .wish-card h3{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.35rem;margin:14px 0 8px}
+        .wish-card p{font-size:1.45rem;line-height:1.35;color:var(--ink);margin-bottom:18px}
+        .vase{width:210px;margin:10px auto 0}
+        .vase svg{width:100%;display:block;overflow:visible}
+        .vstem{stroke-dasharray:220;stroke-dashoffset:220;animation:grow .7s ease forwards}
+        .vpop{transform-box:fill-box;transform-origin:center;animation:pop .55s .35s cubic-bezier(.2,.9,.3,1.4) both}
+
+        /* ---------- us ---------- */
+        .stats{display:grid;gap:14px;margin-top:22px}
+        .stat{background:var(--paper);border-radius:var(--radius);padding:22px 18px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--line)}
+        .stat-num{font-family:'Fraunces',Georgia,serif;font-size:2.7rem;font-weight:600;color:var(--rose-deep);line-height:1;font-variant-numeric:tabular-nums}
+        .stat-label{margin-top:8px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:700}
+        .stat-sub{margin-top:8px;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+        .stat-sub.hand{font-size:1.3rem;color:var(--rose-deep)}
+
+        /* ---------- letter ---------- */
+        .letter{text-align:left;padding:34px 24px 26px;cursor:pointer;
+          background:radial-gradient(circle at 15% 10%,#fff 0,transparent 40%),radial-gradient(circle at 90% 90%,#fbefe9 0,transparent 45%),#fffcf7}
+        .letter::before{content:"";position:absolute;top:-12px;left:50%;width:110px;height:26px;margin-left:-55px;background:rgba(228,138,152,.45);transform:rotate(-3deg);border-radius:2px}
+        .letter .tag{display:flex;width:max-content;margin:0 auto}
+        .letter-greet{font-size:2.1rem;margin:16px 0 8px;min-height:2.7rem}
+        .letter-body p{font-family:'Caveat',cursive;font-size:1.45rem;line-height:1.38;color:var(--ink);margin-bottom:14px}
+        .typing::after{content:"|";color:var(--rose);animation:blink 1s steps(1) infinite;margin-left:1px}
+        .letter-sign{text-align:right;opacity:0;transform:translateY(8px);transition:all .8s ease}
+        .letter-sign.show{opacity:1;transform:none}
+        .letter-sign .hand{display:block;font-size:1.45rem;color:var(--ink)}
+        .letter-sign .name{font-size:2.2rem;color:var(--rose-deep)}
+        .skip{text-align:center;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:10px;font-weight:700}
+
+        /* ---------- finale ---------- */
+        .finale svg{width:min(300px,84vw);display:block;margin:0 auto}
+        .beat{transform-box:fill-box;transform-origin:center;animation:beat 1.3s ease-in-out infinite}
+        .confetti{position:fixed;top:-40px;z-index:30;pointer-events:none;animation:fall linear forwards}
+
+        @keyframes sceneIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(14deg)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+        @keyframes rise{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+        @keyframes pop{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+        @keyframes grow{to{stroke-dashoffset:0}}
+        @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+        @keyframes blink{50%{opacity:0}}
+        @keyframes fall{to{transform:translateY(112vh) rotate(var(--r))}}
+        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    </style>
+</head>
+<body>
+
+<div class="decor" id="decor" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<button class="music-fab" id="musicFab" aria-label="Play or pause music"></button>
+
+<main class="stage">
+
+    <!-- 1. Envelope -->
+    <section class="scene active" id="intro">
+        <div class="center">
+            <span class="tag">✦ a little birthday surprise ✦</span>
+            <h1>Open this, <span data-name></span></h1>
+            <p class="hand" id="introLine"></p>
+            <button class="envelope" id="envelope" aria-label="Open your envelope">
+                <span class="env-back"></span>
+                <span class="env-letter"><span class="hand">for you ♡</span></span>
+                <span class="env-front"></span>
+                <span class="env-flap"></span>
+                <span class="env-seal">♡</span>
+            </button>
+            <p class="hint">tap the envelope</p>
+        </div>
+    </section>
+
+    <!-- 2. Birthday wish + song -->
+    <section class="scene" id="wish">
+        <div class="card">
+            <div class="mascot" id="mascot"></div>
+            <span class="tag">♡ a birthday wish</span>
+            <h1>Happy Birthday, <span data-name></span>!</h1>
+            <p class="arabic" lang="ar" dir="rtl" id="arabic"></p>
+            <div class="divider"><span>✦</span></div>
+            <p class="message" id="wishMessage"></p>
+            <div class="player">
+                <div class="disc" id="disc"></div>
+                <div class="player-body">
+                    <div class="player-kicker">a song for you</div>
+                    <div class="player-title" id="songTitle"></div>
+                    <div class="player-artist" id="songArtist"></div>
+                    <div class="bar" id="bar"><div class="bar-fill" id="barFill"></div></div>
+                    <div class="times"><span id="tCur">0:00</span><span id="tDur">–:––</span></div>
+                </div>
+                <button class="play" id="playBtn" aria-label="Play song"></button>
+            </div>
+            <p class="hand note" id="songNote"></p>
+        </div>
+        <div class="actions"><button class="btn" data-next>see our album →</button></div>
+    </section>
+
+    <!-- 3. Album -->
+    <section class="scene" id="album">
+        <div class="center">
+            <span class="tag">♡ our album</span>
+            <h1>our little album</h1>
+            <p class="sub">a few of my favourite moments with you</p>
+        </div>
+        <div class="carousel" id="carousel">
+            <div class="viewport"><div class="track" id="track"></div></div>
+            <button class="arrow prev" id="prev" aria-label="Previous photo">‹</button>
+            <button class="arrow next" id="next" aria-label="Next photo">›</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="actions"><button class="btn" data-next>pick a wish →</button></div>
+    </section>
+
+    <!-- 4. Wishes -->
+    <section class="scene" id="wishes">
+        <div class="center">
+            <span class="tag">✿ <span id="wishCount">three</span> wishes</span>
+            <h1>a little bouquet of birthday wishes</h1>
+            <p class="sub" id="wishHint">pick a flower, there's a wish inside ♡</p>
+        </div>
+        <div class="flowers" id="flowers"></div>
+        <div class="card wish-card" id="wishCard" hidden>
+            <span class="tag" id="wishTag">wish 1</span>
+            <h3 id="wishTitle"></h3>
+            <p class="hand" id="wishText"></p>
+            <button class="btn small" id="toVase">put it in the vase ♡</button>
+        </div>
+        <div class="vase">
+            <svg viewBox="0 0 200 230" aria-hidden="true">
+                <defs>
+                    <linearGradient id="vaseGrad" x1="0" x2="1"><stop offset="0" stop-color="#2f8f8a"/><stop offset="1" stop-color="#5bb5ab"/></linearGradient>
+                </defs>
+                <g id="stems"></g>
+                <path d="M72 128 Q57 160 66 196 Q74 225 100 225 Q126 225 134 196 Q143 160 128 128 Z" fill="url(#vaseGrad)"/>
+                <ellipse cx="100" cy="128" rx="28" ry="6" fill="#256f6b"/>
+                <g transform="translate(100 180)" fill="none" stroke="#fbe7b0" stroke-width="2" opacity=".9">
+                    <rect x="-11" y="-11" width="22" height="22"/>
+                    <rect x="-11" y="-11" width="22" height="22" transform="rotate(45)"/>
+                    <circle r="3" fill="#fbe7b0" stroke="none"/>
+                </g>
+                <path d="M80 140 Q74 165 80 192" stroke="#fff" stroke-opacity=".25" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <g id="heads"></g>
+            </svg>
+        </div>
+        <div class="actions"><button class="btn" id="wishesNext" data-next hidden>us, in numbers →</button></div>
+    </section>
+
+    <!-- 5. Us in numbers -->
+    <section class="scene" id="us">
+        <div class="center">
+            <span class="tag">✦ us, in numbers</span>
+            <h1>still counting</h1>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num" id="daysTogether">0</div>
+                <div class="stat-label">days together</div>
+                <div class="stat-sub" id="timeTogether"></div>
+            </div>
+            <div class="stat">
+                <div class="stat-num" id="kmApart">0</div>
+                <div class="stat-label" id="kmLabel">kilometres between us</div>
+                <div class="stat-sub hand" id="kmLine"></div>
+            </div>
+            <div class="stat" id="visitStat">
+                <div class="stat-num" id="daysToVisit">0</div>
+                <div class="stat-label">days until I see you</div>
+            </div>
+        </div>
+        <div class="actions"><button class="btn" data-next>a letter for you →</button></div>
+    </section>
+
+    <!-- 6. Letter -->
+    <section class="scene" id="letter">
+        <div class="card letter" id="letterCard">
+            <span class="tag">✿ a letter, just for you</span>
+            <h2 class="hand letter-greet" id="letterGreet"></h2>
+            <div class="letter-body" id="letterBody"></div>
+            <div class="letter-sign" id="letterSign">
+                <span class="hand" id="signOff"></span>
+                <span class="hand name" id="signature"></span>
+            </div>
+            <p class="skip" id="skipHint">tap to show it all</p>
+        </div>
+        <div class="actions"><button class="btn" id="letterNext" data-next hidden>one more thing ♡</button></div>
+    </section>
+
+    <!-- 7. Finale -->
+    <section class="scene" id="finale">
+        <div class="center finale">
+            <div id="cats"></div>
+            <h1>Happy birthday, <span data-name></span></h1>
+            <p class="hand" id="finaleLine"></p>
+            <button class="link" id="replay">read it again ↺</button>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    /* =====================================================================
+       EVERYTHING YOU NEED TO PERSONALISE IS IN THIS CONFIG BLOCK.
+       - Photos: put them in a "photos" folder next to this file (1.jpg, 2.jpg...).
+         Portrait photos look best. Any photo that's missing shows a placeholder.
+       - Song: put the mp3 next to this file and set music.src.
+       - Text in [square brackets] is a placeholder only you can fill in.
+       ===================================================================== */
+    const CONFIG = {
+      herName: "Habibti",                     // what the headings call her
+      fromName: "Zak",
+      arabicGreeting: "عيد ميلاد سعيد",          // "happy birthday", or set to "" to hide
+      introLine: "from Walsall to Casablanca, with all my love",
+
+      wishMessage:
+        "Today the whole world got a little bit luckier, because it's the day you arrived in it. " +
+        "I hope this year is soft and bright and full of the things that make you smile, and I hope I get to be one of them.",
+
+      music: {
+        src: "song.mp3",
+        title: "Just the Way You Are",
+        artist: "Bruno Mars",
+        note: "press play ♡ [why you picked this song]",
+        startOnOpen: true                     // music starts when she opens the envelope
+      },
+
+      album: [
+        { src: "photos/1.jpg", caption: "[the first photo you ever sent me]" },
+        { src: "photos/2.jpg", caption: "[a moment you love]" },
+        { src: "photos/3.jpg", caption: "[my favourite smile of yours]" },
+        { src: "photos/4.jpg", caption: "[the screenshot I'll never delete]" },
+        { src: "photos/5.jpg", caption: "[us, one day soon]" }
+      ],
+
+      wishes: [
+        { title: "for your classroom",
+          text: "May every child you teach feel what I feel when I talk to you: that someone really believes in them. Your students are so lucky, and they don't even know it yet." },
+        { title: "for you",
+          text: "May this year be gentle with you. More early nights, more good news, and more moments where you stop and realise how far you've come." },
+        { title: "for us",
+          text: "That the distance keeps getting smaller, the visits keep getting longer, and one day \"see you soon\" just becomes \"see you in a bit\"." }
+      ],
+
+      togetherSince: "2025-06-15",            // ← change to the real date you got together
+      nextVisit: "2027-04-01",                // ← date you'll next see her, or "" to hide that card
+      places: {
+        me:  { name: "Walsall",    lat: 52.5862, lon: -1.9829 },
+        her: { name: "Casablanca", lat: 33.5731, lon: -7.5898 }
+      },
+      kmLine: "and you're still the closest person to me",
+
+      letter: {
+        greeting: "Dear Habibti,",
+        paragraphs: [
+          "Happy birthday. I wanted to give you something you could actually open, even from over two thousand kilometres away, so I built you this. Every single line of it was written thinking about you.",
+          "I know long distance isn't easy. So much of us lives inside a chat window, and somehow you're still the first person I want to tell everything to. The good news, the bad days, the random thoughts at 1am. They all go to you first.",
+          "This year I watched you work so hard to become a teacher, and I don't think I've told you enough how proud I am of you. You're going to be the teacher those kids remember for the rest of their lives.",
+          "Thank you for being patient, for being kind, and for choosing us every day, even with a whole sea between us. I can't wait for the day all of this is just a story we tell.",
+          "Until then, I'll keep counting down."
+        ],
+        signOff: "Forever yours,",
+        signature: "Zak"
+      },
+
+      finaleLine: "I love you more than every kilometre between us ♡"
+    };
+    /* ===================================================================== */
+
+    (() => {
+      const $ = s => document.querySelector(s);
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fmt = n => Number(n).toLocaleString('en-GB');
+      const sleep = ms => new Promise(r => setTimeout(r, ms));
+      const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+      const ICON = {
+        play:  '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>',
+        pause: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z" fill="currentColor"/></svg>'
+      };
+      const FLOWER_COLOURS = [['#f4a6b4','#f7d488'],['#8fcfc6','#fff1c9'],['#c9b6f0','#f7d488'],['#f7b98f','#fff6e0'],['#f19aa8','#fff1c9'],['#a8c8f0','#fff1c9']];
+
+      function petals(c, centre) {
+        let s = '';
+        for (let k = 0; k < 8; k++) s += `<ellipse cx="50" cy="27" rx="12" ry="21" fill="${c}" opacity=".92" transform="rotate(${k * 45} 50 50)"/>`;
+        return s + `<circle cx="50" cy="50" r="13" fill="${centre}"/><circle cx="50" cy="50" r="13" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/>`;
+      }
+
+      function cat({ fur = '#fff6ee', flower = false, body = true, x = 0, y = 0, flip = false } = {}) {
+        return `<g transform="translate(${x} ${y}) scale(${flip ? -1 : 1} 1)" stroke="#3b2f3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          ${body ? `<path d="M24 62 q26 -2 22 -30" fill="none"/><ellipse cx="0" cy="50" rx="30" ry="26" fill="${fur}"/>
+                   <path d="M-12 74 v-8 M12 74 v-8" fill="none"/>` : ''}
+          <path d="M-30 -10 L-26 -42 L-6 -27 Z" fill="${fur}"/>
+          <path d="M30 -10 L26 -42 L6 -27 Z" fill="${fur}"/>
+          <path d="M-25 -18 L-23 -35 L-12 -26 Z" fill="#f4b6c0" stroke="none"/>
+          <path d="M25 -18 L23 -35 L12 -26 Z" fill="#f4b6c0" stroke="none"/>
+          <ellipse cx="0" cy="0" rx="36" ry="31" fill="${fur}"/>
+          <path d="M-18 -2 q5 -6 10 0" fill="none"/>
+          <path d="M8 -2 q5 -6 10 0" fill="none"/>
+          <ellipse cx="-22" cy="9" rx="6" ry="3.6" fill="#f4a6b4" stroke="none" opacity=".85"/>
+          <ellipse cx="22" cy="9" rx="6" ry="3.6" fill="#f4a6b4" stroke="none" opacity=".85"/>
+          <path d="M-6 8 q3 4 6 0 q3 4 6 0" fill="none"/>
+          ${flower ? `<g transform="translate(-38 -46) scale(.24)" stroke="none">${petals('#f4a6b4', '#f7d488')}</g>` : ''}
+        </g>`;
+      }
+
+      function placeholder(i, path) {
+        const pal = [['#f7d9d6','#f0b5bf'],['#d9eeea','#a6d3cb'],['#fbeacb','#f2cd8d'],['#e7ddf6','#c7b4ef']][i % 4];
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${pal[0]}"/><stop offset="1" stop-color="${pal[1]}"/></linearGradient></defs><rect width="800" height="1000" fill="url(#g)"/><g fill="none" stroke="#fff" stroke-width="7" opacity=".75" transform="translate(400 420)"><rect x="-80" y="-80" width="160" height="160"/><rect x="-80" y="-80" width="160" height="160" transform="rotate(45)"/></g><text x="400" y="660" text-anchor="middle" font-family="Georgia,serif" font-size="58" fill="#5b4655">photo ${i + 1}</text><text x="400" y="725" text-anchor="middle" font-family="monospace" font-size="32" fill="#5b4655" opacity=".7">${esc(path || '')}</text></svg>`;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+
+      /* ---------- text ---------- */
+      document.title = `For ${CONFIG.herName} ♡`;
+      document.querySelectorAll('[data-name]').forEach(el => el.textContent = CONFIG.herName);
+      $('#introLine').textContent = CONFIG.introLine;
+      $('#arabic').textContent = CONFIG.arabicGreeting;
+      $('#arabic').hidden = !CONFIG.arabicGreeting;
+      $('#wishMessage').textContent = CONFIG.wishMessage;
+      $('#songTitle').textContent = CONFIG.music.title;
+      $('#songArtist').textContent = CONFIG.music.artist;
+      $('#songNote').textContent = CONFIG.music.note;
+      $('#kmLine').textContent = CONFIG.kmLine;
+      $('#kmLabel').textContent = `kilometres between ${CONFIG.places.me.name} & ${CONFIG.places.her.name}`;
+      $('#finaleLine').textContent = CONFIG.finaleLine;
+      $('#mascot').innerHTML = `<svg viewBox="-50 -52 100 94">${cat({ body: false, flower: true })}</svg>`;
+      $('#cats').innerHTML = `<svg viewBox="0 0 300 170" aria-hidden="true">
+          ${cat({ fur: '#efe6ea', x: 88, y: 76, flip: true })}
+          ${cat({ fur: '#fff6ee', x: 212, y: 76, flower: true })}
+          <path class="beat" d="M150 52 C146 44 134 44 134 54 C134 62 144 68 150 74 C156 68 166 62 166 54 C166 44 154 44 150 52 Z" fill="#e48a98"/>
+        </svg>`;
+
+      /* ---------- background decor ---------- */
+      const decor = $('#decor');
+      const glyphs = ['✦', '✿', '♡', '✦', '·'];
+      const decoCols = ['#e48a98', '#2f8f8a', '#c9a24a', '#c9b6f0'];
+      for (let i = 0; i < 16; i++) {
+        const s = document.createElement('span');
+        s.textContent = glyphs[i % glyphs.length];
+        s.style.cssText = `left:${Math.random() * 96}%;top:${Math.random() * 96}%;--c:${decoCols[i % 4]};--s:${10 + Math.random() * 16}px;--d:${5 + Math.random() * 6}s;animation-delay:${-Math.random() * 6}s`;
+        decor.appendChild(s);
+      }
+
+      /* ---------- navigation ---------- */
+      const scenes = [...document.querySelectorAll('.scene')];
+      const progress = $('#progress');
+      scenes.forEach(() => progress.appendChild(document.createElement('i')));
+      let current = 0;
+      const onEnter = {};
+      function go(i) {
+        scenes[current].classList.remove('active');
+        current = Math.max(0, Math.min(i, scenes.length - 1));
+        scenes[current].classList.add('active');
+        window.scrollTo({ top: 0 });
+        [...progress.children].forEach((d, k) => d.classList.toggle('on', k === current));
+        const hook = onEnter[scenes[current].id];
+        if (hook) hook();
+        syncPlayer();
+      }
+      document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => go(current + 1)));
+      progress.children[0].classList.add('on');
+
+      /* ---------- music ---------- */
+      const audio = new Audio();
+      audio.src = CONFIG.music.src;
+      audio.loop = true;
+      audio.preload = 'metadata';
+      let audioOk = true, hasPlayed = false;
+      const playBtn = $('#playBtn'), fab = $('#musicFab');
+      const t = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '–:––';
+      function syncPlayer() {
+        const playing = !audio.paused;
+        playBtn.innerHTML = playing ? ICON.pause : ICON.play;
+        fab.innerHTML = playing ? ICON.pause : ICON.play;
+        playBtn.setAttribute('aria-label', playing ? 'Pause song' : 'Play song');
+        $('#disc').classList.toggle('spinning', playing);
+        if (playing) hasPlayed = true;
+        fab.classList.toggle('show', hasPlayed && current !== 1);
+      }
+      function play() { if (audioOk) audio.play().catch(() => {}); }
+      function toggle() { audio.paused ? play() : audio.pause(); }
+      audio.addEventListener('play', syncPlayer);
+      audio.addEventListener('pause', syncPlayer);
+      audio.addEventListener('loadedmetadata', () => $('#tDur').textContent = t(audio.duration));
+      audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        $('#barFill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+        $('#tCur').textContent = t(audio.currentTime);
+      });
+      audio.addEventListener('error', () => {
+        audioOk = false;
+        playBtn.disabled = true;
+        $('#songArtist').textContent = `can't find "${CONFIG.music.src}" next to this page`;
+      });
+      playBtn.addEventListener('click', toggle);
+      fab.addEventListener('click', toggle);
+      $('#bar').addEventListener('click', e => {
+        if (!audio.duration) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+      });
+      syncPlayer();
+
+      /* ---------- envelope ---------- */
+      const env = $('#envelope');
+      env.addEventListener('click', () => {
+        if (env.classList.contains('open')) return;
+        env.classList.add('open');
+        if (CONFIG.music.startOnOpen) play();
+        setTimeout(() => go(1), reduce ? 300 : 2300);
+      });
+
+      /* ---------- album ---------- */
+      const track = $('#track'), dots = $('#dots');
+      const photos = CONFIG.album;
+      let idx = 0;
+      photos.forEach((p, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        const fig = document.createElement('figure');
+        fig.className = 'polaroid';
+        fig.style.setProperty('--tilt', (i % 2 ? 1.6 : -1.6) + 'deg');
+        const img = new Image();
+        img.alt = p.caption || `photo ${i + 1}`;
+        img.draggable = false;
+        img.onerror = () => { img.onerror = null; img.src = placeholder(i, p.src); };
+        img.src = p.src || placeholder(i, '');
+        const cap = document.createElement('figcaption');
+        cap.className = 'hand';
+        cap.textContent = p.caption || '';
+        fig.append(img, cap);
+        slide.appendChild(fig);
+        track.appendChild(slide);
+        dots.appendChild(document.createElement('i'));
+      });
+      function show(i) {
+        idx = (i + photos.length) % photos.length;
+        track.style.transform = `translateX(${-idx * 100}%)`;
+        [...dots.children].forEach((d, k) => d.classList.toggle('on', k === idx));
+      }
+      $('#prev').addEventListener('click', () => show(idx - 1));
+      $('#next').addEventListener('click', () => show(idx + 1));
+      let x0 = null;
+      const vp = document.querySelector('.viewport');
+      vp.addEventListener('pointerdown', e => { x0 = e.clientX; });
+      vp.addEventListener('pointerup', e => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
+      });
+      vp.addEventListener('pointercancel', () => { x0 = null; });
+      if (photos.length < 2) { $('#prev').hidden = $('#next').hidden = true; dots.hidden = true; }
+      show(0);
+
+      /* ---------- wishes ---------- */
+      const W = CONFIG.wishes, nW = W.length;
+      const flowersEl = $('#flowers'), wishCard = $('#wishCard');
+      const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+      $('#wishCount').textContent = words[nW] || nW;
+      let picked = 0, openIdx = null;
+      W.forEach((w, i) => {
+        const [c, cc] = FLOWER_COLOURS[i % FLOWER_COLOURS.length];
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'flower-btn';
+        b.setAttribute('aria-label', `Pick flower ${i + 1}`);
+        b.style.animationDelay = `${-i * 1.1}s`;
+        b.innerHTML = `<span class="bloom"><svg viewBox="0 0 100 100">${petals(c, cc)}</svg></span><span class="stem"></span><span class="pick">pick me</span>`;
+        b.addEventListener('click', () => {
+          if (openIdx !== null) return;
+          openIdx = i;
+          b.classList.add('used');
+          $('#wishTag').textContent = `wish ${picked + 1} of ${nW}`;
+          $('#wishTitle').textContent = w.title;
+          $('#wishText').textContent = w.text;
+          setTimeout(() => { flowersEl.hidden = true; wishCard.hidden = false; }, reduce ? 0 : 300);
+        });
+        flowersEl.appendChild(b);
+      });
+      function addToVase(i, slot) {
+        const off = slot - (nW - 1) / 2;
+        const spread = nW > 3 ? 30 : 42;
+        const x = 100 + off * spread;
+        const y = 46 + Math.abs(off) * 15 + (nW > 3 && slot % 2 ? 12 : 0);
+        const sx = 100 + off * 6;
+        const [c, cc] = FLOWER_COLOURS[i % FLOWER_COLOURS.length];
+        $('#stems').insertAdjacentHTML('beforeend',
+          `<path class="vstem" d="M${sx} 136 Q${(sx + x) / 2} ${y + 46} ${x} ${y}" stroke="#8bb89a" stroke-width="3.2" fill="none" stroke-linecap="round"/>`);
+        $('#heads').insertAdjacentHTML('beforeend',
+          `<g transform="translate(${x} ${y}) scale(.46)"><g class="vpop"><g transform="translate(-50 -50)">${petals(c, cc)}</g></g></g>`);
+      }
+      $('#toVase').addEventListener('click', () => {
+        addToVase(openIdx, picked);
+        picked++;
+        openIdx = null;
+        wishCard.hidden = true;
+        if (picked < nW) {
+          flowersEl.hidden = false;
+        } else {
+          $('#wishHint').textContent = 'your bouquet is complete ♡';
+          $('#wishesNext').hidden = false;
+        }
+      });
+
+      /* ---------- us, in numbers ---------- */
+      const since = new Date(CONFIG.togetherSince + 'T00:00:00');
+      function countUp(el, to, dur = 1500) {
+        if (reduce) { el.textContent = fmt(to); return; }
+        const t0 = performance.now();
+        (function step(now) {
+          const p = Math.min(1, (now - t0) / dur);
+          el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(step);
+        })(t0);
+      }
+      function distanceKm(a, b) {
+        const R = 6371, r = d => d * Math.PI / 180;
+        const h = Math.sin(r(b.lat - a.lat) / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(r(b.lon - a.lon) / 2) ** 2;
+        return Math.round(2 * R * Math.asin(Math.sqrt(h)));
+      }
+      function tick() {
+        const total = Math.max(0, Math.floor((Date.now() - since) / 1000));
+        const h = Math.floor(total / 3600), m = Math.floor(total % 3600 / 60), s = total % 60;
+        $('#timeTogether').textContent = `${fmt(h)} hours · ${m} min · ${String(s).padStart(2, '0')} sec`;
+      }
+      let ticker = null;
+      onEnter.us = () => {
+        const days = Math.max(0, Math.floor((Date.now() - since) / 864e5));
+        countUp($('#daysTogether'), days);
+        countUp($('#kmApart'), distanceKm(CONFIG.places.me, CONFIG.places.her));
+        const visit = CONFIG.nextVisit ? new Date(CONFIG.nextVisit + 'T00:00:00') : null;
+        const toVisit = visit ? Math.ceil((visit - Date.now()) / 864e5) : 0;
+        $('#visitStat').hidden = !(toVisit > 0);
+        if (toVisit > 0) countUp($('#daysToVisit'), toVisit);
+        tick();
+        clearInterval(ticker);
+        ticker = setInterval(tick, 1000);
+      };
+
+      /* ---------- letter ---------- */
+      const L = CONFIG.letter;
+      let started = false, skip = reduce;
+      function keepInView(el) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom > innerHeight - 90) window.scrollBy({ top: r.bottom - innerHeight + 120, behavior: 'smooth' });
+      }
+      async function typeInto(el, text, speed) {
+        el.textContent = '';
+        for (let i = 0; i < text.length; i++) {
+          if (skip) { el.textContent = text; return; }
+          el.textContent += text[i];
+          if (i % 24 === 0) keepInView(el);
+          await sleep(speed);
+        }
+      }
+      async function typeLetter() {
+        const body = $('#letterBody');
+        await typeInto($('#letterGreet'), L.greeting, 55);
+        for (const para of L.paragraphs) {
+          const p = document.createElement('p');
+          p.className = 'typing';
+          body.appendChild(p);
+          await typeInto(p, para, 24);
+          p.classList.remove('typing');
+          if (!skip) await sleep(380);
+        }
+        $('#signOff').textContent = L.signOff;
+        $('#signature').textContent = L.signature;
+        $('#letterSign').classList.add('show');
+        $('#skipHint').hidden = true;
+        $('#letterNext').hidden = false;
+        keepInView($('#letterNext'));
+      }
+      $('#letterCard').addEventListener('click', () => { skip = true; });
+      onEnter.letter = () => { if (!started) { started = true; typeLetter(); } };
+
+      /* ---------- finale ---------- */
+      function confetti() {
+        if (reduce) return;
+        const shapes = ['✦', '♡', '✿', '●', '✦'];
+        const cols = ['#e48a98', '#2f8f8a', '#c9a24a', '#c9b6f0', '#f4a6b4', '#8fcfc6'];
+        for (let i = 0; i < 70; i++) {
+          const s = document.createElement('span');
+          s.className = 'confetti';
+          s.textContent = shapes[i % shapes.length];
+          s.style.cssText = `left:${Math.random() * 100}vw;color:${cols[i % cols.length]};font-size:${10 + Math.random() * 18}px;` +
+            `animation-duration:${3 + Math.random() * 3.5}s;animation-delay:${Math.random() * 1.6}s;--r:${(Math.random() * 2 - 1) * 720}deg`;
+          s.addEventListener('animationend', () => s.remove());
+          document.body.appendChild(s);
+        }
+      }
+      onEnter.finale = confetti;
+      $('#replay').addEventListener('click', () => go(1));
+    })();
+</script>
+</body>
+</html>
